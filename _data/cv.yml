@@ -37,20 +37,14 @@
 - title: Experience
   type: time_table
   contents:
-  - title: Teaching Assistant
-      institution: IUT of Paris
-      year: 2025-2026
-      description: 
-      - Responsible for the exercise classes of Outils Mathématiques Fondamentaux from the first year of the undergraduate degree of Maths-Info
-
     - title: Teaching Assistant
       institution: Université Paris-Saclay
-      year: 2024-2025
+      year: 2025
       description: 
       - Responsible for the exercise classes of Recherche Clinique from the first year of the <a href="https://sites.google.com/view/m1-santepublique-paris-saclay/">Public Health Master's degree</a> from Université Paris Saclay
       
     - title: Student representative in the <a href="https://fp2m.math.cnrs.fr/">Fédération Parisienne de Modélisation Mathématique (FP2M)</a>
-      year: 2023-2025
+      year: 2024-now
       description: 
       - Organising research events between the laboratories MAP5, Modal'X and SAMM
     - title: Research Internship
