@@ -6,6 +6,8 @@ description: #Materials for courses you taught. Replace this text with your desc
 nav: true
 nav_order: 6
 ---
+- October 2025 [10th Statistics and Biopharmacy Conference (SnB)](https://snb2025.sciencesconf.org/?lang=en), Paris, France
+- 
 - March 2025 [10th Survival Analysis for Junior Researchers (SAfJR)](https://safjr2025.uni-bonn.de/), Bonn, Germany
 
 - March 2025 MAP5, Séminaire des doctorants, Paris
