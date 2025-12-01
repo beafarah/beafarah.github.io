@@ -12,7 +12,8 @@
   type: time_table
   contents:
     - title: PhD
-      institution: Université Paris-Cité, laboratoire MAP5 & Institut Curie, Unité U1331
+      institution: Université Paris-Cité, laboratoire MAP5 & Institut Curie, Unité U1331.
+      Funded by Ecole doctorale de Santé Publique, Université Paris-Saclay and Université de Versailles Saint-Quentin-en-Yvelines.
       year: 2023 - now
       description:
         - Design of randomized clinical trials using differences of quantiles in the presence of right-censored data
