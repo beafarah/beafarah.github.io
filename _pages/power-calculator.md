@@ -13,7 +13,7 @@ This calculator assumes exponential distributions for control and censoring time
 
 You can choose the model type: *Proportional hazards* (exponential experimental arm), and *Nonproportional hazards with late treatment effects* (piecewise exponential experimental arm).
 
-Enter the parameters and click on **Calculate Power** to view the analytical power alongside the survival curves :)
+Enter the parameters and click on **Calculate** to view the analytical power reached to detect a given difference in quantiles, or the minimum sample size required to attain a desired power, alongside the true survival curves :)
 
 <p><b>Choose calculation type:</b></p>
 <button onclick="setCalcType('power')">Power Calculation</button>
