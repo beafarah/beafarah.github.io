@@ -6,10 +6,14 @@ nav: true
 nav_order: 7
 ---
 
-<h2>Power for test of equality of quantiles</h2>
+<h2>power for test of equality of quantiles</h2>
 
 Power calculator based on the test of equality of quantiles as described in the paper ["Univariate and multivariate tests of equality of quantiles with right-censored data"](https://arxiv.org/abs/2505.03234).
-This calculator assumes exponential distributions for control and censoring times, with balanced groups.
+This calculator assumes exponential distributions for control and censoring times, with balanced groups. The default parameters are the ones that correspond to some of the simulations from section 3.1 of our paper.
+
+You can choose the model type: *Proportional hazards* (exponential experimental arm), and *Nonproportional hazards with late treatment effects* (piecewise exponential experimental arm).
+
+Enter the parameters and click on **Calculate Power** to view the analytical power alongside the survival curves :)
 
 <p><b>Choose calculation type:</b></p>
 <button onclick="setCalcType('power')">Power Calculation</button>
