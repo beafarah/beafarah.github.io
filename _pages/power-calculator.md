@@ -191,7 +191,7 @@ window.addEventListener("DOMContentLoaded", () => {
         let R = computePower(p, diff, rateC, rateCens, alpha, tcut, n);
         if (!R) { alert("Invalid parameters."); return; }
         pow = R.power;
-        n += 10;   // increase resolution as you wish
+        n += 2;   // increase resolution as you wish
       }
 
       document.getElementById("result").innerText =
