@@ -6,22 +6,17 @@ nav: true
 nav_order: 7
 ---
 
-<h2>power for test of equality of quantiles</h2>
+<h2>Power for test of equality of quantiles</h2>
 
 Power calculator based on the test of equality of quantiles as described in the paper ["Univariate and multivariate tests of equality of quantiles with right-censored data"](https://arxiv.org/abs/2505.03234).
-This calculator assumes exponential distributions for control and censoring times, with balanced groups.  
-You can choose the model type: *Proportional hazards* (exponential experimental arm), and *Nonproportional hazards with late treatment effects* (piecewise exponential experimental arm).
+This calculator assumes exponential distributions for control and censoring times, with balanced groups.
 
-Enter your parameters and click **Calculate Power** to view the analytical power alongside the survival curves :)
+<p><b>Choose calculation type:</b></p>
+<button onclick="setCalcType('power')">Power Calculation</button>
+<button onclick="setCalcType('samplesize')">Sample Size Calculation</button>
+<p>Current calculation: <span id="calc-type">Power</span></p>
 
-<!-- Mode selection -->
-<p><strong>Select calculation mode:</strong></p>
-<button type="button" onclick="setCalcMode('power')">Power Calculation</button>
-<button type="button" onclick="setCalcMode('samplesize')">Sample Size Calculation</button>
-
-<p>Current mode: <span id="calc-mode">Power Calculation</span></p>
-
-<p>Choose model type:</p>
+<p><b>Choose model type:</b></p>
 <button onclick="setModel('exponential')">Proportional</button>
 <button onclick="setModel('piecewise')">Nonproportional</button>
 <p>Current model: <span id="model-type">Exponential</span></p>
@@ -29,7 +24,15 @@ Enter your parameters and click **Calculate Power** to view the analytical power
 <form id="power-form">
   <label>Probability: <input type="number" id="prob" step="any" required></label><br>
   <label>Difference: <input type="number" id="diff" step="any" required></label><br>
-  <label>Total Sample Size: <input type="number" id="sample-size" required></label><br>
+
+  <div id="sample-size-block">
+    <label>Total Sample Size: <input type="number" id="sample-size"></label><br>
+  </div>
+
+  <div id="desired-power-block" style="display:none">
+    <label>Desired Power: <input type="number" id="desired-power" step="any"></label><br>
+  </div>
+
   <label>Rate of Control Arm: <input type="number" id="rate-control" step="any" required></label><br>
   <label>Rate of Censoring: <input type="number" id="rate-cens" step="any" required></label><br>
   <label>Significance Level (alpha): <input type="number" id="alpha" step="any" required></label><br>
@@ -38,17 +41,7 @@ Enter your parameters and click **Calculate Power** to view the analytical power
     <label>Time Cutoff (tcut): <input type="number" id="tcut" step="any"></label><br>
   </div>
 
-  <!-- Only visible in sample-size mode -->
-  <div id="desired-power-row" style="display:none">
-    <label>Desired Power: 
-      <input type="number" id="desired-power" step="any" placeholder="0.80">
-    </label><br>
-  </div>
-
-  <button id="btn-power" type="submit">Calculate Power</button>
-  <button id="btn-sample-size" type="button" onclick="computeSampleSize()" style="display:none">
-    Calculate Sample Size
-  </button>
+  <button type="submit">Calculate</button>
 </form>
 
 <p id="result"></p>
@@ -60,63 +53,34 @@ Enter your parameters and click **Calculate Power** to view the analytical power
 
 {% raw %}
 <script>
-/* -------------------------
-   MODE TOGGLE
-------------------------- */
-let calcMode = 'power';
 
-function setCalcMode(mode) {
-  calcMode = mode;
-  document.getElementById("calc-mode").innerText =
-    mode === 'power' ? 'Power Calculation' : 'Sample Size Calculation';
-
-  document.getElementById("desired-power-row").style.display =
-    mode === 'samplesize' ? 'block' : 'none';
-
-  document.getElementById("btn-power").style.display =
-    mode === 'power' ? 'inline-block' : 'none';
-
-  document.getElementById("btn-sample-size").style.display =
-    mode === 'samplesize' ? 'inline-block' : 'none';
-}
-
-/* -------------------------
-   MODEL TOGGLE
-------------------------- */
 let model = 'exponential';
+let calcType = 'power';
+
 function setModel(m) {
   model = m;
-  document.getElementById("model-type").innerText =
-    m.charAt(0).toUpperCase() + m.slice(1);
-  document.getElementById("piecewise-options").style.display =
-    (m === 'piecewise') ? 'block' : 'none';
+  document.getElementById("model-type").innerText = m.charAt(0).toUpperCase() + m.slice(1);
+  document.getElementById("piecewise-options").style.display = (m === 'piecewise') ? 'block' : 'none';
 }
 
-/* -------------------------
-   UTILITY FUNCTIONS
-------------------------- */
+function setCalcType(t) {
+  calcType = t;
+  document.getElementById("calc-type").innerText = (t === 'power' ? "Power" : "Sample Size");
+  document.getElementById("sample-size-block").style.display = (t === 'power') ? 'block' : 'none';
+  document.getElementById("desired-power-block").style.display = (t === 'samplesize') ? 'block' : 'none';
+}
+
+
+/* ---- Utility functions ---- */
+
 function normCDF(x) {
   var sign = x < 0 ? -1 : 1;
   x = Math.abs(x) / Math.sqrt(2);
   var a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741,
       a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
   var t = 1 / (1 + p * x);
-  var y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1)
-             * t * Math.exp(-x * x);
+  var y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
   return 0.5 * (1 + sign * y);
-}
-
-function expo_pdf(x, lambda) {
-  return lambda * Math.exp(-lambda * x);
-}
-
-function piecewise_pdf(x, rateC, rateE, tcut) {
-  if (x <= tcut) {
-    return rateC * Math.exp(-rateC * x);
-  } else {
-    const s_tcut = Math.exp(-rateC * tcut);
-    return rateE * s_tcut * Math.exp(-rateE * (x - tcut));
-  }
 }
 
 function inverseErf(x) {
@@ -131,297 +95,140 @@ function normSInv(p) {
   return Math.sqrt(2) * inverseErf(2 * p - 1);
 }
 
-Chart.register(window['chartjs-plugin-annotation']);
+function expo_pdf(x, lambda) {
+  return lambda * Math.exp(-lambda * x);
+}
 
-/* -------------------------
-   MAIN POWER CALC HANDLER
-------------------------- */
-window.addEventListener("DOMContentLoaded", function () {
+function piecewise_pdf(x, rateC, rateE, tcut) {
+  if (x <= tcut) return rateC * Math.exp(-rateC * x);
+  const s_t = Math.exp(-rateC * tcut);
+  return rateE * s_t * Math.exp(-rateE * (x - tcut));
+}
+
+/* ---- CORE POWER COMPUTATION (returns power and needed quantities) ---- */
+
+function computePower(p, diff, rateC, rateCens, alpha, tcut, n) {
+
+  const z_crit = Math.abs(normSInv(1 - alpha/2));
+  const quantC = -Math.log(1 - p) / rateC;
+
+  let rateE, quantE, phiE;
+
+  if (model === 'exponential') {
+    rateE = -Math.log(1 - p) / (quantC - diff);
+    quantE = quantC - diff;
+    phiE = rateE / (rateE + rateCens) * (Math.exp((rateE + rateCens)*quantE) - 1);
+  } else {
+    if (quantC - tcut <= diff) return null;
+    const boundary = 1 - Math.exp(-rateC * tcut);
+
+    rateE = (Math.log(1 - p) + rateC*tcut) / (tcut + diff - quantC);
+
+    quantE = (p < boundary)
+       ? -Math.log(1 - p) / rateC
+       : tcut - ((Math.log(1 - p) + rateC*tcut) / rateE);
+
+    phiE =
+      (rateC/(rateC+rateCens))*(Math.exp((rateC+rateCens)*tcut)-1) +
+      (rateE/(rateE+rateCens))*Math.exp((rateC-rateE)*tcut)*
+      (Math.exp((rateE+rateCens)*quantE) - Math.exp((rateE+rateCens)*tcut));
+  }
+
+  const phiC = rateC/(rateC+rateCens) * (Math.exp((rateC+rateCens)*quantC)-1);
+
+  let sigma2;
+  if (model === 'exponential') {
+    sigma2 = Math.pow(1 - p,2) *
+       (phiC/(0.5*Math.pow(expo_pdf(quantC,rateC),2)) +
+        phiE/(0.5*Math.pow(expo_pdf(quantE,rateE),2)));
+  } else {
+    sigma2 = Math.pow(1 - p,2) *
+       (phiC/(0.5*Math.pow(expo_pdf(quantC,rateC),2)) +
+        phiE/(0.5*Math.pow(piecewise_pdf(quantE,rateC,rateE,tcut),2)));
+  }
+
+  const se = Math.sqrt(sigma2/n);
+  const power = 1 - normCDF(z_crit - diff/se) + normCDF(-z_crit - diff/se);
+
+  return {power, quantC, quantE, rateE};
+}
+
+
+/* ---- MAIN FORM HANDLER ---- */
+
+window.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("power-form");
+
   form.addEventListener("submit", function(e) {
-    if (calcMode !== 'power') return;  
     e.preventDefault();
 
-    computePower();
+    const p = parseFloat(prob.value);
+    const diff = parseFloat(document.getElementById("diff").value);
+    const rateC = parseFloat(document.getElementById("rate-control").value);
+    const rateCens = parseFloat(document.getElementById("rate-cens").value);
+    const alpha = parseFloat(document.getElementById("alpha").value);
+    const tcut = (model === 'piecewise') ? parseFloat(document.getElementById("tcut").value) : null;
+
+    let result;
+
+    /* ------------------- POWER CALCULATION MODE ------------------- */
+    if (calcType === "power") {
+      const n = parseFloat(document.getElementById("sample-size").value);
+      result = computePower(p, diff, rateC, rateCens, alpha, tcut, n);
+      if (!result) { alert("Invalid parameters"); return; }
+      document.getElementById("result").innerText =
+        `Estimated Power: ${(result.power*100).toFixed(2)}%`;
+    }
+
+    /* ---------------- SAMPLE SIZE CALCULATION MODE ---------------- */
+    else {
+      const desiredPower = parseFloat(document.getElementById("desired-power").value);
+
+      let n = 10;  
+      let pow = 0;
+
+      while (pow < desiredPower && n < 500000) {
+        let R = computePower(p, diff, rateC, rateCens, alpha, tcut, n);
+        if (!R) { alert("Invalid parameters."); return; }
+        pow = R.power;
+        n += 10;   // increase resolution as you wish
+      }
+
+      document.getElementById("result").innerText =
+        `Required sample size: n = ${n} (achieved power ${(pow*100).toFixed(2)}%)`;
+
+      result = computePower(p, diff, rateC, rateCens, alpha, tcut, n);
+    }
+
+    /* ---- Plot survival curves ---- */
+
+    const quantC = result.quantC;
+    const rateE = result.rateE;
+
+    const timeMax = quantC * 1.5;
+    const timePoints = Array.from({length:100}, (_,i)=> timeMax*i/99);
+
+    const survivalC = timePoints.map(t => Math.exp(-rateC*t));
+    const survivalE = (model==="exponential")
+         ? timePoints.map(t => Math.exp(-rateE*t))
+         : timePoints.map(t => t<=tcut
+              ? Math.exp(-rateC*t)
+              : Math.exp(-rateC*tcut)*Math.exp(-rateE*(t-tcut)));
+
+    if (window.survivalChartInstance) window.survivalChartInstance.destroy();
+
+    const ctx = document.getElementById("survival-chart").getContext("2d");
+    window.survivalChartInstance = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: timePoints,
+        datasets: [
+          { label:"Control Arm", data: survivalC, borderColor:"limegreen", borderWidth:2 },
+          { label:"Experimental Arm", data: survivalE, borderColor:"darkgreen", borderWidth:2 }
+        ]
+      }
+    });
   });
 });
-
-/* -------------------------
-   POWER CALCULATION
-------------------------- */
-function computePower() {
-  const p = parseFloat(document.getElementById("prob").value);
-  const n = parseFloat(document.getElementById("sample-size").value);
-  const rateC = parseFloat(document.getElementById("rate-control").value);
-  const diff = parseFloat(document.getElementById("diff").value);
-  const rateCens = parseFloat(document.getElementById("rate-cens").value);
-  const alpha = parseFloat(document.getElementById("alpha").value);
-  const tcut = model === 'piecewise'
-               ? parseFloat(document.getElementById("tcut").value)
-               : null;
-
-  const z_critical = Math.abs(normSInv(1 - alpha / 2));
-  const quantC = -Math.log(1 - p) / rateC;
-
-  let rateE, quantE, phiE;
-
-  /* Model logic */
-  if (model === 'exponential') {
-    rateE = -Math.log(1 - p) / (quantC - diff);
-    quantE = quantC - diff;
-    phiE = rateE / (rateE + rateCens)
-           * (Math.exp((rateE + rateCens) * quantE) - 1);
-  } else {
-    if (quantC - tcut <= diff) {
-      alert("quantC - tcut must be > diff in piecewise model.");
-      return;
-    }
-    const boundary = 1 - Math.exp(-rateC * tcut);
-    rateE = (Math.log(1 - p) + rateC * tcut) /
-            (tcut + diff - quantC);
-    quantE = (p < boundary)
-      ? -Math.log(1 - p) / rateC
-      : tcut - ((Math.log(1 - p) + rateC * tcut) / rateE);
-
-    phiE =
-      (rateC / (rateC + rateCens))
-        * (Math.exp((rateC + rateCens) * tcut) - 1)
-      +
-      (rateE / (rateE + rateCens))
-        * Math.exp((rateC - rateE) * tcut)
-        * (Math.exp((rateE + rateCens) * quantE) -
-           Math.exp((rateE + rateCens) * tcut));
-  }
-
-  const phiC =
-    rateC / (rateC + rateCens)
-      * (Math.exp((rateC + rateCens) * quantC) - 1);
-
-  let sigma2;
-  if (model === 'exponential') {
-    sigma2 =
-      Math.pow(1 - p, 2) *
-      (phiC / (0.5 * Math.pow(expo_pdf(quantC, rateC), 2)) +
-       phiE / (0.5 * Math.pow(expo_pdf(quantE, rateE), 2)));
-  } else {
-    sigma2 =
-      Math.pow(1 - p, 2) *
-      (phiC / (0.5 * Math.pow(expo_pdf(quantC, rateC), 2)) +
-       phiE / (0.5 * Math.pow(piecewise_pdf(quantE, rateC, rateE, tcut), 2)));
-  }
-
-  if (sigma2 <= 0 || isNaN(sigma2)) {
-    alert("Invalid parameters.");
-    return;
-  }
-
-  const se = Math.sqrt(sigma2 / n);
-  const power =
-    1 - normCDF(z_critical - diff / se)
-      + normCDF(-z_critical - diff / se);
-
-  document.getElementById("result").innerText =
-    isNaN(power)
-      ? "Error: invalid calculation."
-      : `Estimated Power: ${(power * 100).toFixed(2)}%`;
-
-  drawSurvivalCurves(p, quantC, rateC, rateE, tcut);
-}
-
-/* -------------------------
-   SAMPLE SIZE CALCULATION
-------------------------- */
-function computeSampleSize() {
-  const desiredPower = parseFloat(document.getElementById("desired-power").value);
-  if (isNaN(desiredPower) || desiredPower <= 0 || desiredPower >= 1) {
-    alert("Please enter a desired power between 0 and 1.");
-    return;
-  }
-
-  const p = parseFloat(document.getElementById("prob").value);
-  const diff = parseFloat(document.getElementById("diff").value);
-  const rateC = parseFloat(document.getElementById("rate-control").value);
-  const rateCens = parseFloat(document.getElementById("rate-cens").value);
-  const alpha = parseFloat(document.getElementById("alpha").value);
-  const tcut =
-    model === 'piecewise'
-    ? parseFloat(document.getElementById("tcut").value)
-    : null;
-
-  const zcrit = Math.abs(normSInv(1 - alpha / 2));
-  const quantC = -Math.log(1 - p) / rateC;
-
-  let rateE, quantE, phiE;
-
-  /* Same model logic as in power calculation */
-  if (model === 'exponential') {
-    rateE = -Math.log(1 - p) / (quantC - diff);
-    quantE = quantC - diff;
-    phiE = rateE / (rateE + rateCens)
-           * (Math.exp((rateE + rateCens) * quantE) - 1);
-  } else {
-    if (quantC - tcut <= diff) {
-      alert("quantC - tcut must be > diff in piecewise model.");
-      return;
-    }
-    const boundary = 1 - Math.exp(-rateC * tcut);
-    rateE = (Math.log(1 - p) + rateC * tcut) /
-            (tcut + diff - quantC);
-
-    quantE = (p < boundary)
-      ? -Math.log(1 - p) / rateC
-      : tcut - ((Math.log(1 - p) + rateC * tcut) / rateE);
-
-    phiE =
-      (rateC / (rateC + rateCens))
-        * (Math.exp((rateC + rateCens) * tcut) - 1)
-      +
-      (rateE / (rateE + rateCens))
-        * Math.exp((rateC - rateE) * tcut)
-        * (Math.exp((rateE + rateCens) * quantE) -
-           Math.exp((rateE + rateCens) * tcut));
-  }
-
-  const phiC =
-    rateC / (rateC + rateCens)
-      * (Math.exp((rateC + rateCens) * quantC) - 1);
-
-  let sigma2;
-  if (model === 'exponential') {
-    sigma2 =
-      Math.pow(1 - p, 2) *
-      (phiC / (0.5 * Math.pow(expo_pdf(quantC, rateC), 2)) +
-       phiE / (0.5 * Math.pow(expo_pdf(quantE, rateE), 2)));
-  } else {
-    sigma2 =
-      Math.pow(1 - p, 2) *
-      (phiC / (0.5 * Math.pow(expo_pdf(quantC, rateC), 2)) +
-       phiE / (0.5 * Math.pow(piecewise_pdf(quantE, rateC, rateE, tcut), 2)));
-  }
-
-  if (sigma2 <= 0 || isNaN(sigma2)) {
-    alert("Invalid parameters.");
-    return;
-  }
-
-  /* Solve for N via binary search */
-  function powerAtN(n) {
-    const se = Math.sqrt(sigma2 / n);
-    return 1 - normCDF(zcrit - diff / se)
-           + normCDF(-zcrit - diff / se);
-  }
-
-  let low = 2;
-  let high = 1e7;
-  let mid;
-
-  for (let i = 0; i < 80; i++) {
-    mid = Math.floor((low + high) / 2);
-    if (powerAtN(mid) >= desiredPower) {
-      high = mid;
-    } else {
-      low = mid + 1;
-    }
-  }
-
-  document.getElementById("result").innerText =
-    `Required sample size for power ${desiredPower}: N = ${high}`;
-}
-
-/* -------------------------
-   DRAW SURVIVAL CURVES
-------------------------- */
-function drawSurvivalCurves(p, quantC, rateC, rateE, tcut) {
-  const timeMax = quantC * 1.5;
-  const timePoints =
-    Array.from({ length: 100 },
-      (_, i) => +(timeMax * i / 99).toFixed(2));
-
-  const survivalC =
-    timePoints.map(t => Math.exp(-rateC * t));
-
-  const survivalE =
-    model === 'exponential'
-    ? timePoints.map(t => Math.exp(-rateE * t))
-    : timePoints.map(t =>
-        t <= tcut
-        ? Math.exp(-rateC * t)
-        : Math.exp(-rateC * tcut)
-          * Math.exp(-rateE * (t - tcut))
-      );
-
-  const ctx = document.getElementById("survival-chart").getContext("2d");
-  if (window.survivalChartInstance)
-    window.survivalChartInstance.destroy();
-
-  window.survivalChartInstance = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: timePoints,
-      datasets: [
-        { label: "Control Arm",
-          data: survivalC,
-          borderColor: "limegreen",
-          fill: false,
-          tension: 0.3, borderWidth: 2 },
-        { label: "Experimental Arm",
-          data: survivalE,
-          borderColor: "darkgreen",
-          fill: false,
-          tension: 0.3,
-          borderWidth: 2 }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        title: {
-          display: true,
-          text: "Survival Functions",
-          font: { size: 18 }
-        },
-        legend: {
-          labels: { font: { size: 14 } }
-        },
-        annotation: {
-          annotations: {
-            hLine: {
-              type: 'line',
-              yMin: 1 - p,
-              yMax: 1 - p,
-              borderColor: 'green',
-              borderWidth: 2,
-              borderDash: [6, 6],
-              label: {
-                content: `1 - p = ${(1 - p).toFixed(2)}`,
-                enabled: true,
-                position: 'start',
-                backgroundColor: 'rgba(0,0,0,0.7)',
-                color: '#fff',
-                font: { style: 'italic' }
-              }
-            }
-          }
-        }
-      },
-      scales: {
-        x: { title: {
-          display: true, text: "Time", font: { size: 16 } }},
-        y: {
-          min: 0, max: 1,
-          title: {
-            display: true,
-            text: "Survival Probability",
-            font: { size: 16 }
-          },
-          ticks: {
-            stepSize: 0.2,
-            callback: val => val.toFixed(1)
-          }
-        }
-      }
-    }
-  });
-}
 </script>
 {% endraw %}
