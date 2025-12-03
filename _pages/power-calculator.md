@@ -51,6 +51,22 @@ Enter the parameters and click on **Calculate Power** to view the analytical pow
 <p id="result"></p>
 
 <canvas id="survival-chart" width="800" height="400"></canvas>
+<style>
+button {
+  background-color: lightgray;
+  color: black;
+  border: 1px solid #888;
+  padding: 5px 10px;
+  margin: 2px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button.selected {
+  background-color: green;
+  color: white;
+}
+</style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0/dist/chartjs-plugin-annotation.min.js"></script>
@@ -60,18 +76,30 @@ Enter the parameters and click on **Calculate Power** to view the analytical pow
 
 let model = 'exponential';
 let calcType = 'power';
-
-function setModel(m) {
-  model = m;
-  document.getElementById("model-type").innerText = m.charAt(0).toUpperCase() + m.slice(1);
-  document.getElementById("piecewise-options").style.display = (m === 'piecewise') ? 'block' : 'none';
-}
+window.addEventListener("DOMContentLoaded", () => {
+  setCalcType(calcType);
+  setModel(model);
+});
 
 function setCalcType(t) {
   calcType = t;
   document.getElementById("calc-type").innerText = (t === 'power' ? "Power" : "Sample Size");
   document.getElementById("sample-size-block").style.display = (t === 'power') ? 'block' : 'none';
   document.getElementById("desired-power-block").style.display = (t === 'samplesize') ? 'block' : 'none';
+
+  // Highlight selected button
+  document.querySelectorAll("button[onclick^='setCalcType']").forEach(btn => btn.classList.remove("selected"));
+  document.querySelector(`button[onclick="setCalcType('${t}')"]`).classList.add("selected");
+}
+
+function setModel(m) {
+  model = m;
+  document.getElementById("model-type").innerText = m.charAt(0).toUpperCase() + m.slice(1);
+  document.getElementById("piecewise-options").style.display = (m === 'piecewise') ? 'block' : 'none';
+
+  // Highlight selected button
+  document.querySelectorAll("button[onclick^='setModel']").forEach(btn => btn.classList.remove("selected"));
+  document.querySelector(`button[onclick="setModel('${m}')"]`).classList.add("selected");
 }
 
 
