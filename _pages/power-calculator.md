@@ -214,21 +214,55 @@ window.addEventListener("DOMContentLoaded", () => {
          : timePoints.map(t => t<=tcut
               ? Math.exp(-rateC*t)
               : Math.exp(-rateC*tcut)*Math.exp(-rateE*(t-tcut)));
-
+  
     if (window.survivalChartInstance) window.survivalChartInstance.destroy();
-
-    const ctx = document.getElementById("survival-chart").getContext("2d");
     window.survivalChartInstance = new Chart(ctx, {
       type: "line",
       data: {
         labels: timePoints,
         datasets: [
-          { label:"Control Arm", data: survivalC, borderColor:"limegreen", borderWidth:2 },
-          { label:"Experimental Arm", data: survivalE, borderColor:"darkgreen", borderWidth:2 }
+          { label: "Control Arm", data: survivalC, borderColor: "limegreen", fill: false, tension: 0.3, borderWidth: 2 },
+          { label: "Experimental Arm", data: survivalE, borderColor: "darkgreen", fill: false, tension: 0.3, borderWidth: 2 }
         ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: { display: true, text: "Survival Functions", font: { size: 18 } },
+          legend: { labels: { font: { size: 14 } } },
+          annotation: {
+            annotations: {
+              hLine: {
+                type: 'line',
+                yMin: 1 - p,
+                yMax: 1 - p,
+                borderColor: 'green',
+                borderWidth: 2,
+                borderDash: [6, 6],
+                label: {
+                  content: `1 - p = ${(1 - p).toFixed(2)}`,
+                  enabled: true,
+                  position: 'start',
+                  backgroundColor: 'rgba(0,0,0,0.7)',
+                  color: '#fff',
+                  font: { style: 'italic' }
+                }
+              }
+            }
+          }
+        },
+        scales: {
+          x: { title: { display: true, text: "Time", font: { size: 16 } } },
+          y: {
+            min: 0, max: 1,
+            title: { display: true, text: "Survival Probability", font: { size: 16 } },
+            ticks: { stepSize: 0.2, callback: val => val.toFixed(1) }
+          }
+        }
       }
     });
   });
 });
 </script>
 {% endraw %}
+
