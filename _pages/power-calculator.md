@@ -11,6 +11,7 @@ nav_order: 7
 Power calculator based on the test of equality of quantiles as described in the paper ["Univariate and multivariate tests of equality of quantiles with right-censored data"](https://arxiv.org/abs/2505.03234).
 This calculator assumes exponential distributions for control and censoring times, with balanced groups.  
 You can choose the model type: *Proportional hazards* (exponential experimental arm), and *Nonproportional hazards with late treatment effects* (piecewise exponential experimental arm).
+The default parameters are the ones that correspond to some of the simulations from section 3.1 of our paper.
 
 Enter your parameters and click **Calculate Power** to view the analytical power alongside the survival curves :)
 
@@ -22,7 +23,7 @@ Enter your parameters and click **Calculate Power** to view the analytical power
 <form id="power-form">
   <label>Probability: <input type="number" id="prob" step="any" required value="0.5"></label><br>
   <label>Difference: <input type="number" id="diff" step="any" required value="0.1"></label><br>
-  <label>Total Sample Size: <input type="number" id="sample-size" required value="200"></label><br>
+  <label>Total Sample Size: <input type="number" id="sample-size" required value="1000"></label><br>
   <label>Rate of Control Arm: <input type="number" id="rate-control" step="any" required value="1.5"></label><br>
   <label>Rate of Censoring: <input type="number" id="rate-cens" step="any" required value="0.48"></label><br>
   <label>Significance Level (alpha): <input type="number" id="alpha" step="any" required value="0.05"></label><br>
