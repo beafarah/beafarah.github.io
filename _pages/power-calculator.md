@@ -214,7 +214,8 @@ window.addEventListener("DOMContentLoaded", () => {
          : timePoints.map(t => t<=tcut
               ? Math.exp(-rateC*t)
               : Math.exp(-rateC*tcut)*Math.exp(-rateE*(t-tcut)));
-  
+
+    const ctx = document.getElementById("survival-chart").getContext("2d");
     if (window.survivalChartInstance) window.survivalChartInstance.destroy();
     window.survivalChartInstance = new Chart(ctx, {
       type: "line",
