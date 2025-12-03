@@ -266,8 +266,7 @@ window.addEventListener("DOMContentLoaded", () => {
           tooltip: {
             callbacks: {
               label: function(context) {
-                      let yVal = context.raw; // use raw value
-                return `${context.dataset.label}: ${yVal.toFixed(2)}`;
+                return `${context.dataset.label}: ${context.parsed.y.toFixed(2)}`;
               }
             }
           },
