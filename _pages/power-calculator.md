@@ -238,7 +238,8 @@ window.addEventListener("DOMContentLoaded", () => {
           tooltip: {
             callbacks: {
               label: function(context) {
-                return `${context.dataset.label}: ${context.parsed.y.toFixed(2)}`;
+                      let yVal = context.raw; // use raw value
+                return `${context.dataset.label}: ${yVal.toFixed(2)}`;
               }
             }
           },
