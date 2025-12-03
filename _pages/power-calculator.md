@@ -22,23 +22,23 @@ This calculator assumes exponential distributions for control and censoring time
 <p>Current model: <span id="model-type">Exponential</span></p>
 
 <form id="power-form">
-  <label>Probability: <input type="number" id="prob" step="any" required></label><br>
-  <label>Difference: <input type="number" id="diff" step="any" required></label><br>
+  <label>Probability: <input type="number" id="prob" step="any" required value="0.5"></label><br>
+  <label>Difference: <input type="number" id="diff" step="any" required value="0.1"></label><br>
 
   <div id="sample-size-block">
-    <label>Total Sample Size: <input type="number" id="sample-size"></label><br>
+    <label>Total Sample Size: <input type="number" id="sample-size" required value="1000"></label><br>
   </div>
 
   <div id="desired-power-block" style="display:none">
-    <label>Desired Power: <input type="number" id="desired-power" step="any"></label><br>
+    <label>Desired Power: <input type="number" id="desired-power" step="any" required value="0.9"></label><br>
   </div>
 
-  <label>Rate of Control Arm: <input type="number" id="rate-control" step="any" required></label><br>
-  <label>Rate of Censoring: <input type="number" id="rate-cens" step="any" required></label><br>
-  <label>Significance Level (alpha): <input type="number" id="alpha" step="any" required></label><br>
+  <label>Rate of Control Arm: <input type="number" id="rate-control" step="any" required value="1.5"></label><br>
+  <label>Rate of Censoring: <input type="number" id="rate-cens" step="any" required value="0.48"></label><br>
+  <label>Significance Level (alpha): <input type="number" id="alpha" step="any" required value="0.05"></label><br>
 
   <div id="piecewise-options" style="display:none">
-    <label>Time Cutoff (tcut): <input type="number" id="tcut" step="any"></label><br>
+    <label>Time Cutoff (tcut): <input type="number" id="tcut" step="any" value="0.2"></label><br>
   </div>
 
   <button type="submit">Calculate</button>
@@ -195,7 +195,7 @@ window.addEventListener("DOMContentLoaded", () => {
       }
 
       document.getElementById("result").innerText =
-        `Required sample size: n = ${n} (achieved power ${(pow*100).toFixed(2)}%)`;
+        `Minimum sample size per arm = ${Math.ceil(n/2)} (total n = ${n}, achieved power ${(pow*100).toFixed(2)}%)`;
 
       result = computePower(p, diff, rateC, rateCens, alpha, tcut, n);
     }
