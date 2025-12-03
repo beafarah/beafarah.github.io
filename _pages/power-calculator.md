@@ -231,6 +231,13 @@ window.addEventListener("DOMContentLoaded", () => {
         plugins: {
           title: { display: true, text: "Survival Functions", font: { size: 18 } },
           legend: { labels: { font: { size: 14 } } },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return `${context.dataset.label}: ${context.parsed.y.toFixed(2)}`;
+              }
+            }
+          },
           annotation: {
             annotations: {
               hLine: {
