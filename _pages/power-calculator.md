@@ -18,12 +18,10 @@ Enter the parameters and click on **Calculate Power** to view the analytical pow
 <p><b>Choose calculation type:</b></p>
 <button onclick="setCalcType('power')">Power Calculation</button>
 <button onclick="setCalcType('samplesize')">Sample Size Calculation</button>
-<p>Current calculation: <span id="calc-type">Power</span></p>
 
 <p><b>Choose model type:</b></p>
 <button onclick="setModel('exponential')">Proportional</button>
 <button onclick="setModel('piecewise')">Nonproportional</button>
-<p>Current model: <span id="model-type">Exponential</span></p>
 
 <form id="power-form">
   <label>Probability: <input type="number" id="prob" step="any" required value="0.5"></label><br>
@@ -209,7 +207,7 @@ window.addEventListener("DOMContentLoaded", () => {
       result = computePower(p, diff, rateC, rateCens, alpha, tcut, n);
       if (!result) { alert("Invalid parameters"); return; }
       document.getElementById("result").innerText =
-        `Estimated Power: ${(result.power*100).toFixed(2)}%`;
+        `<b>Power: ${(result.power*100).toFixed(2)}%</b>`;
     }
 
     /* ---------------- SAMPLE SIZE CALCULATION MODE ---------------- */
@@ -227,7 +225,7 @@ window.addEventListener("DOMContentLoaded", () => {
       }
 
       document.getElementById("result").innerText =
-        `Minimum sample size per arm = ${Math.ceil(n/2)} (total n = ${n}, achieved power ${(pow*100).toFixed(2)}%)`;
+        `<b>Minimum sample size per arm = ${Math.ceil(n/2)} (total n = ${n}, achieved power ${(pow*100).toFixed(2)}%)</b>`;
 
       result = computePower(p, diff, rateC, rateCens, alpha, tcut, n);
     }
