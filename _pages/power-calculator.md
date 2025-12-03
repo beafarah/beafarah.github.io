@@ -18,12 +18,12 @@ Enter the parameters and click on **Calculate Power** to view the analytical pow
 <p><b>Choose calculation type:</b></p>
 <button onclick="setCalcType('power')">Power Calculation</button>
 <button onclick="setCalcType('samplesize')">Sample Size Calculation</button>
-<p>Current calculation: <span id="calc-type">Power</span></p>
+<!-- <p>Current calculation: <span id="calc-type">Power</span></p> -->
 
 <p><b>Choose model type:</b></p>
 <button onclick="setModel('exponential')">Proportional</button>
 <button onclick="setModel('piecewise')">Nonproportional</button>
-<p>Current model: <span id="model-type">Exponential</span></p>
+<!-- <p>Current model: <span id="model-type">Exponential</span></p> -->
 
 <form id="power-form">
   <label>Probability: <input type="number" id="prob" step="any" required value="0.5"></label><br>
