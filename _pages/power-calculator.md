@@ -206,7 +206,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const rateE = result.rateE;
 
     const timeMax = quantC * 1.5;
-    const timePoints = Array.from({length:100}, (_,i)=> timeMax*i/99);
+    const timePoints = Array.from({length:100}, (_,i)=> +(timeMax*i/99).toFixed(2));
 
     const survivalC = timePoints.map(t => Math.exp(-rateC*t));
     const survivalE = (model==="exponential")
@@ -253,7 +253,9 @@ window.addEventListener("DOMContentLoaded", () => {
           }
         },
         scales: {
-          x: { title: { display: true, text: "Time", font: { size: 16 } } },
+          x: { title: { display: true, text: "Time", font: { size: 16 } },
+             ticks: { stepSize: 0.2, callback: val => val.toFixed(1) }
+             },
           y: {
             min: 0, max: 1,
             title: { display: true, text: "Survival Probability", font: { size: 16 } },
