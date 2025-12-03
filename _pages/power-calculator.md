@@ -208,7 +208,7 @@ window.addEventListener("DOMContentLoaded", () => {
       const n = parseFloat(document.getElementById("sample-size").value);
       result = computePower(p, diff, rateC, rateCens, alpha, tcut, n);
       if (!result) { alert("Invalid parameters"); return; }
-      document.getElementById("result").innerText =
+      document.getElementById("result").innerHTML =
         `<b>Power: ${(result.power*100).toFixed(2)}%</b>`;
     }
 
@@ -226,7 +226,7 @@ window.addEventListener("DOMContentLoaded", () => {
         n += 2;   // increase resolution as you wish
       }
 
-      document.getElementById("result").innerText =
+      document.getElementById("result").innerHTML  =
         `<b>Minimum sample size per arm = ${Math.ceil(n/2)} (total n = ${n}, achieved power ${(pow*100).toFixed(2)}%)</b>`;
 
       result = computePower(p, diff, rateC, rateCens, alpha, tcut, n);
