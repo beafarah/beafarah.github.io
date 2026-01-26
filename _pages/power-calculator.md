@@ -140,6 +140,25 @@ function piecewise_pdf(x, rateC, rateE, tcut) {
 /* ---- CORE POWER COMPUTATION (returns power and needed quantities) ---- */
 
 function computePower(p, diff, rateC, rateCens, alpha, tcut, n) {
+  if (!isFinite(p) || p <= 0 || p >= 1) {
+    alert("Probability must be between 0 and 1 (exclusive).");
+    return null;
+  }
+
+  if (!isFinite(alpha) || alpha <= 0 || alpha >= 1) {
+    alert("Alpha must be between 0 and 1 (exclusive).");
+    return null;
+  }
+
+  if (!isFinite(n) || n <= 0) {
+    alert("Sample size must be positive.");
+    return null;
+  }
+
+  if (!isFinite(rateC) || rateC <= 0 || !isFinite(rateCens) || rateCens < 0) {
+    alert("Rates must be non-negative (control rate > 0).");
+    return null;
+  }
 
   const z_crit = Math.abs(normSInv(1 - alpha/2));
   const quantC = -Math.log(1 - p) / rateC;
@@ -166,6 +185,11 @@ function computePower(p, diff, rateC, rateCens, alpha, tcut, n) {
       (Math.exp((rateE+rateCens)*quantE) - Math.exp((rateE+rateCens)*tcut));
   }
 
+  if (!isFinite(rateE) || rateE <= 0) {
+    alert("Invalid experimental arm parameters (rateE ≤ 0).");
+    return null;
+  }
+
   const phiC = rateC/(rateC+rateCens) * (Math.exp((rateC+rateCens)*quantC)-1);
 
   let sigma2;
@@ -177,6 +201,11 @@ function computePower(p, diff, rateC, rateCens, alpha, tcut, n) {
     sigma2 = Math.pow(1 - p,2) *
        (phiC/(0.5*Math.pow(expo_pdf(quantC,rateC),2)) +
         phiE/(0.5*Math.pow(piecewise_pdf(quantE,rateC,rateE,tcut),2)));
+  }
+  
+  if (!isFinite(sigma2) || sigma2 <= 0) {
+    alert("Error: invalid parameters (non-positive variance).");
+    return null;
   }
 
   const se = Math.sqrt(sigma2/n);
