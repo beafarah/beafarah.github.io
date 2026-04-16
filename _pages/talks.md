@@ -6,6 +6,10 @@ description: #Materials for courses you taught. Replace this text with your desc
 nav: true
 nav_order: 6
 ---
+- March 2026 [11th Survival Analysis for Junior Researchers (SAfJR)](https://www.safjr.org/), Amsterdam, the Netherlands
+  
+- January 2025 [Séance ouverte du Groupe de Travail des Éphémères](https://map5.mi.parisdescartes.fr/events/que-font-les-doctorants-seance-ouverte-du-groupe-de-travail-des-ephemeres-2/), Paris, France
+  
 - October 2025 [10th Statistics and Biopharmacy Conference (SnB)](https://snb2025.sciencesconf.org/?lang=en), Paris, France
 
 - March 2025 [10th Survival Analysis for Junior Researchers (SAfJR)](https://safjr2025.uni-bonn.de/), Bonn, Germany
