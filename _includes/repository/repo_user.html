@@ -1,6 +1,15 @@
-<div class="repo p-2 text-center">
-  <a href="https://github.com/{{ include.username }}">
-    <img class="repo-img-light w-100" alt="{{ include.username }}" src="https://github-readme-stats.vercel.app/api/?username={{ include.username }}&theme={{ site.repo_theme_light }}&show_icons=true">
-    <img class="repo-img-dark w-100" alt="{{ include.username }}" src="https://github-readme-stats.vercel.app/api/?username={{ include.username }}&theme={{ site.repo_theme_dark }}&show_icons=true">
+<div class="repo p-3 text-center">
+  <a href="https://github.com/{{ include.username }}"
+     target="_blank"
+     rel="noopener noreferrer">
+    <img
+      src="https://github.com/{{ include.username }}.png"
+      alt="{{ include.username }}"
+      style="width: 80px; height: 80px; border-radius: 50%;"
+    >
+    <p class="mt-2 mb-0">
+      <strong>{{ include.username }}</strong>
+    </p>
+    <p class="small text-muted mb-0">GitHub profile</p>
   </a>
 </div>
