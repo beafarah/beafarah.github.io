@@ -16,6 +16,7 @@
 
 {% endcomment %}
 
+{% comment %}
 {% assign repo_url = include.repository | split: '/' %}
 
 <div class="repo p-3 text-center">
@@ -25,6 +26,41 @@
     <strong>{{ repo_url.last | replace: '-', ' ' | replace: '_', ' ' }}</strong>
   </a>
   <p class="small mb-0 mt-2">
+    <span class="text-muted">GitHub repository</span>
+  </p>
+</div>
+{% endcomment %}
+
+{% assign repo_url = include.repository | split: '/' %}
+{% assign repo_name = repo_url.last %}
+
+{% case repo_name %}
+  {% when "dens-estimation-at-quantile" %}
+    {% assign description = "Statistical methods for density estimation at quantiles." %}
+  {% when "survival" %}
+    {% assign description = "Methods and applications in survival analysis." %}
+  {% when "ML-projects" %}
+    {% assign description = "Machine learning projects and applications." %}
+  {% when "NLP_Intent_Classification" %}
+    {% assign description = "Natural language processing and intent classification." %}
+  {% when "cloudcomputingensae" %}
+    {% assign description = "Projects in cloud computing." %}
+  {% else %}
+    {% assign description = "Explore this project on GitHub." %}
+{% endcase %}
+
+<div class="repo p-3 text-center">
+  <a href="https://github.com/{{ include.repository }}"
+     target="_blank"
+     rel="noopener noreferrer">
+    <strong>{{ repo_name | replace: '-', ' ' | replace: '_', ' ' }}</strong>
+  </a>
+
+  <p class="small mb-0 mt-2">
+    {{ description }}
+  </p>
+
+  <p class="small mt-2 mb-0">
     <span class="text-muted">GitHub repository</span>
   </p>
 </div>
