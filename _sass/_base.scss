@@ -727,17 +727,17 @@ progress {
 .repository-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.5rem;
-  max-width: 800px;
+  gap: 0.75rem;
+  max-width: 760px;
   margin: 1.5rem auto;
 }
 
 .repository-grid .repo {
   width: 100%;
   height: 100%;
-  padding: 1.5rem !important;
+  padding: 0.75rem !important;
   border: 1px solid var(--global-divider-color);
-  border-radius: 10px;
+  border-radius: 8px;
   transition: transform 0.2s ease;
 }
 
