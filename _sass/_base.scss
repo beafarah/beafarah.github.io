@@ -754,3 +754,37 @@ progress {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Teaching page */
+
+.teaching-list {
+  max-width: 850px;
+  margin: 1.5rem auto;
+}
+
+.teaching-item {
+  padding: 0.5rem 0 1.25rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--global-divider-color);
+}
+
+.teaching-item:last-child {
+  border-bottom: none;
+}
+
+.teaching-item h3 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+.teaching-item .teaching-meta {
+  font-size: 0.85rem;
+  color: var(--global-text-color-light);
+  margin-bottom: 0.6rem;
+}
+
+.teaching-item p {
+  line-height: 1.65;
+}
