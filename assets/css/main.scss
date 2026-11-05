@@ -13,3 +13,20 @@ $max-content-width: {{ site.max_width }};
   "base",
   "distill"
 ;
+
+.abstract {
+  display: block;
+  margin-top: 0.6rem;
+  margin-bottom: 1rem;
+  padding: 0.8rem 1rem;
+  background-color: var(--global-code-bg-color);
+  border-left: 2px solid var(--global-divider-color);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--global-text-color-light);
+}
+
+.abstract p {
+  margin-bottom: 0;
+  color: var(--global-text-color-light);
+}
